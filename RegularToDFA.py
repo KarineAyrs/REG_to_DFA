@@ -27,6 +27,8 @@ class RegularToDFA:
         self.count = 1
         self._build_tree()
         # self.dfs()
+        self.final_states = []
+        self.automata = pd.DataFrame()
         self._REG_to_DKA()
 
     def dfs(self):  # prints syntax_tree
@@ -34,10 +36,11 @@ class RegularToDFA:
         while len(s) != 0:
             u = s.pop(-1)
             print('parent=', u.symbol, u.position, u.nullable, u.firstpos, u.lastpos)
+            # print(u.symbol)
+
             if u.left is not None:
                 print('left=', u.left.symbol, u.left.position, u.left.nullable, u.left.firstpos, u.left.lastpos)
                 s.append(u.left)
-
             if u.right is not None:
                 print('right=', u.right.symbol, u.right.position, u.right.nullable, u.right.firstpos, u.right.lastpos)
                 s.append(u.right)
@@ -56,6 +59,7 @@ class RegularToDFA:
     def _build_tree(self):
         cur_node = self.root
         reg_perfect = self._for_convenience()
+        # print(reg_perfect)
         for i in range(len(reg_perfect)):
             if reg_perfect[i] == '(':
                 left = Node(None, 0, cur_node, None, None)
@@ -63,13 +67,25 @@ class RegularToDFA:
                 cur_node = cur_node.left
             if reg_perfect[i] in ['|', '.']:
                 if cur_node.symbol is not None:
-                    self._calc_everything_in_the_WORLD(cur_node)
-                    parent = Node(reg_perfect[i], 0, None, cur_node, None)
-                    cur_node.parent = parent
-                    right_of_parent = Node(None, 0, cur_node.parent, None, None)
-                    cur_node.parent.right = right_of_parent
-                    self.root = cur_node.parent
-                    cur_node = cur_node.parent.right
+                    if cur_node.parent is not None:
+                        self._calc_everything_in_the_WORLD(cur_node)
+                        left_child = cur_node
+                        parent = Node(reg_perfect[i], 0, cur_node.parent, left_child, None)
+                        cur_node.parent.right = parent
+                        self._calc_everything_in_the_WORLD(cur_node.parent)
+                        cur_node.parent = parent
+                        self._calc_everything_in_the_WORLD(cur_node.parent)
+                        right_child = Node(None, 0, cur_node.parent, None, None)
+                        cur_node.parent.right = right_child
+                        cur_node = cur_node.parent.right
+                    else:
+                        self._calc_everything_in_the_WORLD(cur_node)
+                        parent = Node(reg_perfect[i], 0, None, cur_node, None)
+                        cur_node.parent = parent
+                        right_of_parent = Node(None, 0, cur_node.parent, None, None)
+                        cur_node.parent.right = right_of_parent
+                        self.root = cur_node.parent
+                        cur_node = cur_node.parent.right
                 else:
                     cur_node.symbol = reg_perfect[i]
                     right = Node(None, 0, cur_node, None, None)
@@ -77,11 +93,12 @@ class RegularToDFA:
                     cur_node = cur_node.right
             if reg_perfect[i] == '*':
                 if cur_node.symbol is not None:
-                    self._calc_everything_in_the_WORLD(cur_node)
+                    # self._calc_everything_in_the_WORLD(cur_node)
                     grand_child = cur_node.right
                     child = Node(reg_perfect[i], 0, cur_node, grand_child, None)
                     cur_node.right = child
                     self._calc_everything_in_the_WORLD(cur_node.right)
+                    self._calc_everything_in_the_WORLD(cur_node)
                     grand_child.parent = cur_node.right
                     self.root = cur_node
                 else:
@@ -95,7 +112,8 @@ class RegularToDFA:
             if reg_perfect[i] == ')':
                 if cur_node.parent is not None:
                     cur_node = cur_node.parent
-                    self.root = cur_node
+                    if cur_node.parent is None:
+                        self.root = cur_node
 
                 else:
                     parent = Node(None, 0, None, cur_node, None)
@@ -112,7 +130,8 @@ class RegularToDFA:
                 if cur_node.parent is not None:
                     cur_node = cur_node.parent
                     self._calc_everything_in_the_WORLD(cur_node)
-                    self.root = cur_node
+                    if cur_node.parent is None:
+                        self.root = cur_node
 
                 else:
                     parent = Node(None, 0, None, cur_node, None)
@@ -169,10 +188,16 @@ class RegularToDFA:
         States_D = []
         Q_nepom = [self.root.firstpos]
         Q_pomech = []
-        final_state = []
+        count = 0
+        states_numbers = dict()
+        states_numbers[str(list(Q_nepom[0]))] = count
+        count += 1
         while (Q_nepom):
             R = list(Q_nepom.pop())
             Q_pomech.append(set(R))
+
+            if self.count - 1 in set(R):
+                self.final_states.append(states_numbers[str(R)])
 
             sym = []
             for i in R:
@@ -185,29 +210,23 @@ class RegularToDFA:
                         S = S | self.followpos[R[j]]
 
                 if S:
+
                     if S not in Q_nepom and S not in Q_pomech:
                         Q_nepom.append(S)
+                        states_numbers[str(list(S))] = count
+                        count += 1
                     Input_sym.append(sym[i])
-                    States_Q.append(set(R))
-                    States_D.append(S)
-                    if self.count - 1 in S:
-                        final_state.append(1)
-                    else:
-                        final_state.append(0)
-        labels = [0 for i in range(len(Input_sym))]
-        df = pd.DataFrame(
+                    States_Q.append(states_numbers[str(R)])
+                    States_D.append(states_numbers[str(list(S))])
+
+
+        self.automata = pd.DataFrame(
             {'A': Input_sym,
              'Q': States_Q,
-             'Fi': States_D,
-             'final_state': final_state})
+             'Fi': States_D})
 
-        for i in range(len(df['A'])):
-            for j in range(len(df['A'])):
-                if df.iloc[i][0] == df.iloc[j][0] and df.iloc[i][1] == df.iloc[j][1] and df.iloc[i][2] == df.iloc[j][2] \
-                        and i != j and labels[i] != 1:
-                    labels[j] = 1
+        self.automata = self.automata.drop_duplicates().reset_index(drop=True)
 
-        df['Dub'] = labels
-        df = df.loc[df['Dub'] != 1]
-        df = df.drop(['Dub'], axis='columns')
-        df.to_csv(self.out, index=False)
+        self.automata.to_csv(self.out, index=False)
+
+        return self.final_states, self.automata
