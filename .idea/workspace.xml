@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d1231df3-96e2-4b90-8db9-1872bfa07884" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/equivalence_of_automatas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RegularToDFA.py" beforeDir="false" afterPath="$PROJECT_DIR$/RegularToDFA.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/automata1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/automata1.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/automata2.csv" beforeDir="false" afterPath="$PROJECT_DIR$/automata2.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/in.txt" beforeDir="false" afterPath="$PROJECT_DIR$/in.txt" afterDir="false" />
@@ -101,8 +99,17 @@
       <workItem from="1589269816492" duration="17831000" />
       <workItem from="1589358821301" duration="1968000" />
       <workItem from="1589453398941" duration="3257000" />
-      <workItem from="1589480350429" duration="11566000" />
+      <workItem from="1589480350429" duration="13177000" />
+      <workItem from="1589522220180" duration="626000" />
     </task>
+    <task id="LOCAL-00001" summary="some bugs fixed and equivalence function added">
+      <created>1589492029191</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1589492029191</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -121,6 +128,10 @@
       </map>
     </option>
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="some bugs fixed and equivalence function added" />
+    <option name="LAST_COMMIT_MESSAGE" value="some bugs fixed and equivalence function added" />
+  </component>
   <component name="XDebuggerManager">
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -130,6 +141,6 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/from_REG_to_DNA_with_LOVE$main.coverage" NAME="main Coverage Results" MODIFIED="1589491921202" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/from_REG_to_DNA_with_LOVE$main.coverage" NAME="main Coverage Results" MODIFIED="1589493451402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
